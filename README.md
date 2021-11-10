@@ -5,8 +5,10 @@ coneconnecting: Code that holds math for finding cones that 'connect' to form th
 
 ## How to use Object_Detection_Module 
 
-Because the size of the big file sizes of the "traning" folder (the weights) and also the archive obj.zip where all the photos of the cones are stored in the drive at this locations: <br/>
+Because the size of the big file sizes of the "traning" folder (the weights) and also the archive obj.zip where all the photos of the cones are stored <br/>
+
+The location of the mentioned files is:<br/>
 
 https://drive.google.com/drive/folders/16qPjcqzjfw3wzPSjmJlqCNKbgekR5UpY?usp=sharing
 
-### For proper use of the module the mentioned files are necessay 
+### For proper use of the module the mentioned files are necessary 
