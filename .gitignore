@@ -5,3 +5,7 @@ desktop.ini
 .idea/
 obj.zip
 training
+yolov4-tiny-custom.cfg
+yolov3-tiny.weights
+yolov3-tiny.cfg
+coco.names
