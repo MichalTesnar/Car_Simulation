@@ -9,3 +9,10 @@ yolov4-tiny-custom.cfg
 yolov3-tiny.weights
 yolov3-tiny.cfg
 coco.names
+**/data
+custom_yolov5s.yaml
+custom-yolov4-tiny-detector_best.weights
+custom-yolov4-tiny-detector_final.weights
+custom-yolov4-tiny-detector.cfg
+yolov4.cfg
+best.pt

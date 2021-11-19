@@ -1,9 +1,9 @@
-import cv2
 import os
+import cv2
 import time 
 
-path = 'Data_Collecting_Module/data/images'
-cameraNumber = 0
+path = 'data/images'
+cameraNumber = 1 # 1 For external camera, 0 for internal
 cameraBrightness = 190
 moduleValue = 10
 minBlur = 500

@@ -2,7 +2,7 @@ import cv2
 import time
 import numpy as np 
 
-capture = cv2.VideoCapture(1)
+capture = cv2.VideoCapture(0)
 confidenceThreshold = 0.4
 nmsThreshold = 0.3
 
@@ -20,8 +20,8 @@ with open(classesFile, 'rt') as f:
 # In case in future we still use coco.names this is for asigning 
 # the names to an array cuz I am too lazy to do it manually
 
-modelConfiguration = 'yolov3-tiny.cfg' 
-modelWeights = 'yolov3-tiny.weights'
+modelConfiguration = 'custom-yolov4-tiny-detector.cfg'
+modelWeights = 'custom-yolov4-tiny-detector_best.weights'
 # To be replaced with future configurations
 
 net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
@@ -64,7 +64,7 @@ def findObject(outputs, img) :
 while True:
      success, img = capture.read()
 
-     blob = cv2.dnn.blobFromImage(img, 1/255, (320, 320), [0, 0, 0], crop = False)
+     blob = cv2.dnn.blobFromImage(img, 1/255, (416, 416), [0, 0, 0], crop=False)
      net.setInput(blob)
      # See YOLO does not know how to read a video stream
      # But it knows to read blobs soo..
