@@ -4,7 +4,7 @@ import numpy as np
 
 capture = cv2.VideoCapture(0)
 confidenceThreshold = 0.4
-nmsThreshold = 0.3
+nmsThreshold = 0.3  # Higher threshold => better dettection => Lower FPS
 
 # Used to record the time when we processed last frame
 prev_frame_time = 0
@@ -20,8 +20,8 @@ with open(classesFile, 'rt') as f:
 # In case in future we still use coco.names this is for asigning 
 # the names to an array cuz I am too lazy to do it manually
 
-modelConfiguration = 'custom-yolov4-tiny-detector.cfg'
-modelWeights = 'custom-yolov4-tiny-detector_best.weights'
+modelConfiguration = './Configurations/custom-yolov4-tiny-detector.cfg'
+modelWeights = './Weights/custom-yolov4-tiny-detector_best.weights'
 # To be replaced with future configurations
 
 net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
@@ -58,7 +58,6 @@ def findObject(outputs, img) :
           cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 0), 2)
           cv2.putText(img, f'{classNames[classIds[i]].upper()} {int(confs[i] * 100)}%', (x, y - 10), cv2.FONT_HERSHEY_COMPLEX, 0.6, (255, 255, 0))
           # Drawing bounding boxes and labes the detection
-
 
 
 while True:

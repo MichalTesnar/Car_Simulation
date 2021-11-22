@@ -5,10 +5,30 @@ coneconnecting: Code that holds math for finding cones that 'connect' to form th
 
 ## How to use Object_Detection_Module 
 
-Because the size of the big file sizes of the "traning" folder (the weights) and also the archive obj.zip where all the photos of the cones are stored <br/>
+For proper use of the Object_Detection_Module you need to follow these steps:
 
-The location of the mentioned files is:<br/>
-
+### 1. Download the configurations and the weights from the HARD Google Drive:
+```
 https://drive.google.com/drive/folders/16qPjcqzjfw3wzPSjmJlqCNKbgekR5UpY?usp=sharing
+```
+### 2. Make the following 2 directories:
+```
+Configurations
+```
+Where all the contents of the Configurations folder from drive should be in. </br>
 
-### For proper use of the module the mentioned files are necessary 
+And
+```
+Weights
+```
+Where the contents of YOLO_V4 Tiny Weights.zip should be in. </br>
+
+In the end you should end up with this folder structure:
+```
+|New Version
+|-Configurations
+|-Weights
+|-coco.names
+|-detecion.py
+```
+### 3. Make sure you have OpenCV built and optionally with CUDA and CuDNN.
