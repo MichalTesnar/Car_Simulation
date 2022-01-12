@@ -135,17 +135,16 @@ def render(pp, fullscreen = False):
      #   text_pos = [10, 130]
      #   pp.screen.blit(text_surf, text_pos)
         
-        text_surf = text_font.render(f'Track: {pp.track}', 1, (255, 255, 255))
         text_pos = [10, 100]
         pp.screen.blit(text_surf, text_pos)
         
         text_surf = text_font.render(f'Autonomous: {pp.car.auto}', 1, (255, 255, 255))
         text_pos = [10, 80]
         pp.screen.blit(text_surf, text_pos)
-        if pp.track == True:
-            text_surf = text_font.render(f'Lap: {pp.track_number}', 1, (255, 255, 255))
-            text_pos = [10, 120]
-            pp.screen.blit(text_surf, text_pos)
+        
+        text_surf = text_font.render(f'Lap: {pp.track_number}', 1, (255, 255, 255))
+        text_pos = [10, 120]
+        pp.screen.blit(text_surf, text_pos)
         
         
       #  text_surf = text_font.render(f'number of visible left cones: {len(visible_left_cones)}', 1, (255, 255, 255))

@@ -49,9 +49,7 @@ class PathPlanning:
         self.level_id = None
         self.track_number = -1
         self.track_number_changed = False
-        self.time_start_track = None
         self.time_start_sim = None
-        self.track = False
         self.ppu = 32
 
     def initialize_map(self):
@@ -80,7 +78,7 @@ class PathPlanning:
         # while not self.exit:
         if self.level_id == None:
             random_number = random.randint(1, 5)
-            self.level_id = f"MAP_{2}"
+            self.level_id = f"MAP_{5}"
 
         left_cones, right_cones = pp_functions.utils.load_existing_map(self.level_id)
         self.cone.cone_list[Side.LEFT] = left_cones
@@ -101,32 +99,27 @@ class PathPlanning:
         #reset targets for new lap
         if (len(self.target.targets) > 0
         and len(self.target.non_passed_targets) == 0 
-        and self.track == True 
-        and (self.path.spline_linked[Path_Side.LEFT] == True or self.path.spline_linked[Path_Side.RIGHT] == True)):
-            self.target.reset_targets() 
+        and (self.path.spline_linked[Side.LEFT] == True or self.path.spline_linked[Side.RIGHT] == True)):
+            self.target.reset_targets()
 
     def track_logic(self):
-        #Setting the finishing line/point
-        if (self.cone.first_visible_cone[Side.LEFT] != 0 and self.cone.first_visible_cone[Side.RIGHT] != 0 
-        and self.midpoint_created == False): 
-
-            start_midpoint_x = np.mean([self.cone.first_visible_cone[Side.LEFT].position.x, self.cone.first_visible_cone[Side.RIGHT].position.x])
-            start_midpoint_y = np.mean([self.cone.first_visible_cone[Side.LEFT].position.y, self.cone.first_visible_cone[Side.RIGHT].position.y])     
-            self.midpoint_created = True
+        if self.cone.first_visible_cone[Side.LEFT] != 0 and self.cone.first_visible_cone[Side.RIGHT] != 0: 
+            
+            #Setting the finishing line/point
+            if not self.midpoint_created:
+                self.path.start_midpoint_x = np.mean([self.cone.first_visible_cone[Side.LEFT].position.x, self.cone.first_visible_cone[Side.RIGHT].position.x])
+                self.path.start_midpoint_y = np.mean([self.cone.first_visible_cone[Side.LEFT].position.y, self.cone.first_visible_cone[Side.RIGHT].position.y])     
+                self.midpoint_created = True
                 
-                
-            #incrementing lap number by 1
-            if (np.linalg.norm((start_midpoint_x, start_midpoint_y)-self.car.position) < 20/self.ppu 
-            and self.track_number_changed == False 
-            and self.track == True):
+            #Incrementing lap number by 1
+            elif (np.linalg.norm((self.path.start_midpoint_x, self.path.start_midpoint_y)-self.car.position) < 20/self.ppu 
+            and self.track_number_changed == False):
                 self.track_number += 1
-                print('TIME : ', time.time() - self.time_start_track)
                 lap_reward = True
                 self.track_number_changed = True
                 
-            #setting track_number_changed to false when not on finishing line
-            elif (np.linalg.norm((start_midpoint_x, start_midpoint_y)-self.car.position) > 20/self.ppu 
-            and self.track == True):
+            #Setting track_number_changed to false when not on finishing line
+            elif np.linalg.norm((self.path.start_midpoint_x, self.path.start_midpoint_y)-self.car.position) > 20/self.ppu:
                 self.track_number_changed = False  
 
     def steering(self):
@@ -165,6 +158,7 @@ class PathPlanning:
         time_start_sim = time.time()
 
         while not self.exit:
+
             dt = self.clock.get_time() / 500
 
             # Event queue
@@ -175,11 +169,6 @@ class PathPlanning:
                          
             #Defining the time running since simulation started
             time_running = time.time() - time_start
-
-            #making car autonomous
-            if self.car.auto == False:
-                self.car.auto  = True
-                self.time_start_track = time.time()
             
             #redefining the car angle so that it is in (-180,180)
             self.car.config_angle()

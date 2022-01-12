@@ -13,6 +13,8 @@ class Path:
 		self.splines = {Side.LEFT: 0, Side.RIGHT: 0}
 		self.spline_linked = {Side.LEFT: False, Side.RIGHT: False}
 
+		self.start_midpoint_x = 0
+		self.start_midpoint_y = 0
 
 	def compute_boundaries(self,pp):
 	
@@ -38,7 +40,7 @@ class Path:
 				else:
 					K = 2
 					
-				if len(pp.cone.visible_cone_list[category]) == len(pp.cone.cone_list[category]) and pp.track == True and self.spline_linked[category] == False:
+				if len(pp.cone.visible_cone_list[category]) == len(pp.cone.cone_list[category]) and self.spline_linked[category] == False:
 					x.append(x[0])
 					y.append(y[0])
 					self.spline_linked[category] = True
@@ -73,7 +75,6 @@ class Path:
 			
 			#find all 'visible' midpoints - this may be inefficient
 			for i in range(len(path_midpoints[0])):
-			  #  print(i)
 				dist_car = np.linalg.norm(Vector2(path_midpoints[0][i],path_midpoints[1][i]) - pp.car.position)
 		
 				#calculating angle between car angle and midpoint

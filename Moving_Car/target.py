@@ -40,8 +40,6 @@ class Target:
 
         for target in self.non_passed_targets:
             if target.passed == True:
-                print('remove passed target')
-                
                 self.non_passed_targets.remove(target)
         #print(len(self.non_passed_targets))
 
@@ -88,14 +86,14 @@ class Target:
             if len(self.visible_dists) == 0:
                 self.visible_targets = []
             else:
-                prev = self.closest_target
+                # prev = self.closest_target
                 self.closest_target = self.visible_targets[np.array(self.visible_dists).argmin()]
-                if self.closest_target != prev:
-                    print('closest target changed')
+                # if self.closest_target != prev:
+                #     print('closest target changed')
 
-                print(len(self.visible_targets))
-                print(len(self.targets))
+                # print(len(self.visible_targets))
+                # print(len(self.targets))
     def reset_targets(self):
         self.non_passed_targets = self.targets.copy()
         for target in self.targets:
-            self.target.passed = False
+            target.passed = False
