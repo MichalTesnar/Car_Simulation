@@ -16,12 +16,13 @@ from cone import *
 from path import *
 
 from pp_functions import utils
+import pp_functions.manual_controls
 import pp_functions.drawing
 import pp_functions.reward_function 
         
 
 class PathPlanning:
-    def __init__(self, map_name = 'MAP_NULL'):
+    def __init__(self):
         # TODO: initialize target -> call generate_midpoint_path first?
         self.target = Target(0,0)
         self.car = Car(15,3)
@@ -33,26 +34,29 @@ class PathPlanning:
         width = 1280
         height = 720
         self.screen = pygame.display.set_mode((width, height))
+        self.fullscreen = False
         self.clock = pygame.time.Clock()
         self.ticks = 60
         self.exit = False
+        self.mouse_pos_list = []
         self.total_reward = 0
         self.cruising_speed = 2
-        self.map_name = map_name
 
         self.view_offset = [0.0, 0.0]
         self.prev_view_offset = [0.0, 0.0]
         self.moving_view_offset = False
         self.view_offset_mouse_pos_start = [0.0,0.0]
         self.midpoint_created = False
+        self.undo_done = False
 
         self.level_id = None
+        self.track = True
         self.track_number = -1
         self.track_number_changed = False
         self.time_start_sim = None
         self.ppu = 32
 
-    def initialize_map(self):
+    def initialize_images(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "images/car_r_30.png")
         self.car.car_image = pygame.image.load(image_path)
@@ -75,10 +79,10 @@ class PathPlanning:
         image_path6 = os.path.join(current_dir, "images/right_spline_s.png")
         self.path.spline_image[Side.RIGHT] = pygame.image.load(image_path6)
 
-        # while not self.exit:
+    def initialize_map(self):
         if self.level_id == None:
             random_number = random.randint(1, 5)
-            self.level_id = f"MAP_{5}"
+            self.level_id = f"MAP_{random_number}"
 
         left_cones, right_cones = pp_functions.utils.load_existing_map(self.level_id)
         self.cone.cone_list[Side.LEFT] = left_cones
@@ -99,27 +103,29 @@ class PathPlanning:
         #reset targets for new lap
         if (len(self.target.targets) > 0
         and len(self.target.non_passed_targets) == 0 
-        and (self.path.spline_linked[Side.LEFT] == True or self.path.spline_linked[Side.RIGHT] == True)):
+        and (self.path.spline_linked[Side.LEFT] == True or self.path.spline_linked[Side.RIGHT] == True)
+        and self.track):
             self.target.reset_targets()
 
     def track_logic(self):
         if self.cone.first_visible_cone[Side.LEFT] != 0 and self.cone.first_visible_cone[Side.RIGHT] != 0: 
             
             #Setting the finishing line/point
-            if not self.midpoint_created:
+            if not self.midpoint_created and self.track:
                 self.path.start_midpoint_x = np.mean([self.cone.first_visible_cone[Side.LEFT].position.x, self.cone.first_visible_cone[Side.RIGHT].position.x])
                 self.path.start_midpoint_y = np.mean([self.cone.first_visible_cone[Side.LEFT].position.y, self.cone.first_visible_cone[Side.RIGHT].position.y])     
                 self.midpoint_created = True
                 
             #Incrementing lap number by 1
             elif (np.linalg.norm((self.path.start_midpoint_x, self.path.start_midpoint_y)-self.car.position) < 20/self.ppu 
-            and self.track_number_changed == False):
+            and not self.track_number_changed and self.track):
                 self.track_number += 1
                 lap_reward = True
                 self.track_number_changed = True
                 
             #Setting track_number_changed to false when not on finishing line
-            elif np.linalg.norm((self.path.start_midpoint_x, self.path.start_midpoint_y)-self.car.position) > 20/self.ppu:
+            elif (np.linalg.norm((self.path.start_midpoint_x, self.path.start_midpoint_y)-self.car.position) > 20/self.ppu
+            and self.track):
                 self.track_number_changed = False  
 
     def steering(self):
@@ -149,9 +155,13 @@ class PathPlanning:
                 cone.update(self, time_running)
         
 
-    def run(self):
+    def run(self, method = "autonomous"):
 
-        self.initialize_map()
+        self.initialize_images()
+
+        if method == "autonomous":
+            self.initialize_map()
+            self.car.auto = True
         
         time_start = time.time()
         lap_reward = False
@@ -166,6 +176,12 @@ class PathPlanning:
             for event in events:
                 if event.type == pygame.QUIT:
                     self.exit = True
+
+            if method == "autonomous":
+                pp_functions.manual_controls.enable_dragging_screen(self, events)
+            else:
+                # user inputs
+                pp_functions.manual_controls.user_input(self, events, dt)
                          
             #Defining the time running since simulation started
             time_running = time.time() - time_start
@@ -214,4 +230,8 @@ class PathPlanning:
 
 if __name__ == '__main__':
     sim = PathPlanning()
-    sim.run()
+
+    # 2 methods:
+    #   1) autonomous: no user inputs, only screen dragging
+    #   2) user: old simulation with user inputs
+    sim.run(method = "user") 

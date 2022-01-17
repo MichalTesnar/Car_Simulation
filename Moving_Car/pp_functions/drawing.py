@@ -1,4 +1,3 @@
-import os
 import pygame
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
@@ -8,6 +7,9 @@ from PIL import Image, ImageDraw
 from scipy.interpolate import splprep, splev
 import pandas as pd
 
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join('..', '')))
 from cone import Side
 # import pp_functions.utils
 
@@ -33,7 +35,7 @@ def draw_line_dashed(surface, color, start_pos, end_pos, offset, width = 1, dash
          for n in range(int(exclude_corners), dash_amount - int(exclude_corners), 2)]    
 
 
-def render(pp, fullscreen = False):
+def render(pp):
     
     pp.screen.fill((0, 0, 0))
     rotated = pygame.transform.rotate(pp.car.car_image, pp.car.angle)
@@ -99,7 +101,7 @@ def render(pp, fullscreen = False):
        draw_line_dashed(pp.screen, (155,255,255),(pos_1,pos_2) , pp.target.closest_target.position * pp.ppu , pp.view_offset, width = 2, dash_length = 10, exclude_corners = True)
     
     
-    if fullscreen == False:
+    if pp.fullscreen == False:
         text_font = pygame.font.Font(None, 30)
      #   text_surf = text_font.render(f'Angle to target : {round(alpha,1)}', 1, (255, 255, 255))
      #   text_pos = [10, 10]
@@ -135,6 +137,7 @@ def render(pp, fullscreen = False):
      #   text_pos = [10, 130]
      #   pp.screen.blit(text_surf, text_pos)
         
+        text_surf = text_font.render(f'Track: {pp.track}', 1, (255, 255, 255))
         text_pos = [10, 100]
         pp.screen.blit(text_surf, text_pos)
         
@@ -154,9 +157,6 @@ def render(pp, fullscreen = False):
        # text_surf = text_font.render(f'Headlights: {car.headlights}', 1, (255, 255, 255))
        # text_pos = [10, 190]
        # pp.screen.blit(text_surf, text_pos)
-        text_surf = text_font.render('Press F to enter Fullscreen', 1, (155, 155, 155))
-        text_pos = [10, 500]
-        pp.screen.blit(text_surf, text_pos)
        
         text_surf = text_font.render('Press 1 and 2 to alter car speed', 1, (155, 155, 155))
         text_pos = [10, 520]
@@ -166,28 +166,24 @@ def render(pp, fullscreen = False):
         text_pos = [10, 540]
         pp.screen.blit(text_surf, text_pos)
         
-        text_surf = text_font.render('Press H to toggle headlights', 1, (155, 155, 155))
-        text_pos = [10, 560]
-        pp.screen.blit(text_surf, text_pos)
-        
         text_surf = text_font.render('Press L to place left cone', 1, (155, 155, 155))
-        text_pos = [10, 580]
+        text_pos = [10, 560]
         pp.screen.blit(text_surf, text_pos)            
     
         text_surf = text_font.render('Press R to place right cone', 1, (155, 155, 155))
-        text_pos = [10, 600]
+        text_pos = [10, 580]
         pp.screen.blit(text_surf, text_pos)            
         
         text_surf = text_font.render('Press T to make track', 1, (155, 155, 155))
-        text_pos = [10, 620]
+        text_pos = [10, 600]
         pp.screen.blit(text_surf, text_pos)
         
         text_surf = text_font.render('Press CTRL + C to clear', 1, (155, 155, 155))
-        text_pos = [10, 640]
+        text_pos = [10, 620]
         pp.screen.blit(text_surf, text_pos)
         
         text_surf = text_font.render('Press S to save map', 1, (155, 155, 155))
-        text_pos = [10, 680]
+        text_pos = [10, 640]
         pp.screen.blit(text_surf, text_pos)
         
         text_surf = text_font.render('Press D to load map', 1, (155, 155, 155))

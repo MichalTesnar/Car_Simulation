@@ -18,7 +18,7 @@ class Cone:
         self.dist_car = 10**10
         self.alpha = 0
 
-        self.cone_list = {}
+        self.cone_list = {Side.LEFT:[], Side.RIGHT: []}
         self.visible_cone_list = {Side.LEFT:[], Side.RIGHT: []}
         self.new_visible_cone_flag = {}
         self.first_cone_found = {Side.LEFT: False, Side.RIGHT: False}
