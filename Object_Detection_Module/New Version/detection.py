@@ -2,7 +2,11 @@ import cv2
 import time
 import numpy as np 
 
-capture = cv2.VideoCapture(0)
+#GLOBAL VARIABLES
+Focal_Lenght = 3.67
+Known_Width = 225
+
+capture = cv2.VideoCapture(1)
 confidenceThreshold = 0.4
 nmsThreshold = 0.3  # Higher threshold => better dettection => Lower FPS
 
@@ -55,8 +59,10 @@ def findObject(outputs, img) :
      for i in indices:
           box = bbox[i]
           x, y, w, h = box[0], box[1], box[2], box[3]
+          marker = (x, y), (x + w, y + h)
+          distance = ((Known_Width * Focal_Lenght) / marker[1][0])
           cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 0), 2)
-          cv2.putText(img, f'{classNames[classIds[i]].upper()} {int(confs[i] * 100)}%', (x, y - 10), cv2.FONT_HERSHEY_COMPLEX, 0.6, (255, 255, 0))
+          cv2.putText(img, f'{classNames[classIds[i]].upper()} {int(confs[i] * 100)}% Distance: {distance}', (x, y - 10), cv2.FONT_HERSHEY_COMPLEX, 0.6, (255, 255, 0))
           # Drawing bounding boxes and labes the detection
 
 
