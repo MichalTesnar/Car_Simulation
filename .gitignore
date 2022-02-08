@@ -13,3 +13,4 @@ coco.names
 **/Weights
 YOLO_V4 Tiny Weights.zip
 **/Configurations
+**/Object_Detection_Module/Data_Collecting_Module/Small_Orange

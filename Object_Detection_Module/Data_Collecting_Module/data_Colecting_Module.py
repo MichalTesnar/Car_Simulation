@@ -3,15 +3,15 @@ import cv2
 import time 
 
 path = 'data/images'
-cameraNumber = 1 # 1 For external camera, 0 for internal
-cameraBrightness = 190
+cameraNumber = 0 # 1 For external camera, 0 for internal
+cameraBrightness = 150
 moduleValue = 10
-minBlur = 500
+minBlur = 150
 grayImage = False
 saveData = True
 showImage = True
-imgWidth = 180
-imgHeight = 120
+imgWidth = 640
+imgHeight = 480
 
 global countFolder
 capture = cv2.VideoCapture(cameraNumber)
@@ -38,6 +38,7 @@ while True:
      if grayImage:img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
      if saveData:
           blur = cv2.Laplacian(img, cv2.CV_64F).var()
+          print(blur)
           if count % moduleValue == 0 and blur > minBlur:
                nowTime = time.time() #Why is time.time(), does not make any sense
                cv2.imwrite(path + str(countFolder) + '/' + str(countSave) + " " + str(int(blur)) + " " + str(nowTime) + ".png", img)
