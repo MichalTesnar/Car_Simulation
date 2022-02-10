@@ -25,7 +25,7 @@ class Car:
         self.turning_sharpness = 1.8
         self.breaks = True
         self.fov_range = 60
-        self.auto = False
+        self.auto = True
         self.headlights = False
 
     def config_angle(self):

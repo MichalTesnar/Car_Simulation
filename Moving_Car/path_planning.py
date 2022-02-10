@@ -19,15 +19,18 @@ from pp_functions import utils
 import pp_functions.manual_controls
 import pp_functions.drawing
 import pp_functions.reward_function 
-        
+     
+global LEVEL_ID
+LEVEL_ID = None   
 
 class PathPlanning:
     def __init__(self):
-        # TODO: initialize target -> call generate_midpoint_path first?
         self.target = Target(0,0)
         self.car = Car(15,3)
         self.cone = Cone(0,0,Side.LEFT)
         self.path = Path()
+        self.initialize_images()
+        self.initialize_map()
 
         pygame.init()
         pygame.display.set_caption("Car")
@@ -49,12 +52,12 @@ class PathPlanning:
         self.midpoint_created = False
         self.undo_done = False
 
-        self.level_id = None
         self.track = True
         self.track_number = -1
         self.track_number_changed = False
         self.time_start_sim = None
         self.ppu = 32
+
 
     def initialize_images(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -80,11 +83,12 @@ class PathPlanning:
         self.path.spline_image[Side.RIGHT] = pygame.image.load(image_path6)
 
     def initialize_map(self):
-        if self.level_id == None:
+        global LEVEL_ID
+        if LEVEL_ID == None:
             random_number = random.randint(1, 5)
-            self.level_id = f"MAP_{random_number}"
+            LEVEL_ID = f"MAP_{random_number}"
 
-        left_cones, right_cones = pp_functions.utils.load_existing_map(self.level_id)
+        left_cones, right_cones = pp_functions.utils.load_existing_map(LEVEL_ID)
         self.cone.cone_list[Side.LEFT] = left_cones
         self.cone.cone_list[Side.RIGHT] = right_cones
 
@@ -161,7 +165,8 @@ class PathPlanning:
 
         if method == "autonomous":
             self.initialize_map()
-            self.car.auto = True
+        else:
+            self.car.auto = False
         
         time_start = time.time()
         lap_reward = False
@@ -170,6 +175,7 @@ class PathPlanning:
         while not self.exit:
 
             dt = self.clock.get_time() / 500
+            print(dt)
 
             # Event queue
             events = pygame.event.get()
@@ -234,4 +240,4 @@ if __name__ == '__main__':
     # 2 methods:
     #   1) autonomous: no user inputs, only screen dragging
     #   2) user: old simulation with user inputs
-    sim.run(method = "user") 
+    sim.run(method = "autonomous") 

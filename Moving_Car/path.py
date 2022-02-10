@@ -21,7 +21,6 @@ class Path:
 		#cubic splines for left track boundaries
 		for category in Side:
 			if len(pp.cone.visible_cone_list[category]) > 1 and pp.car.auto == True and pp.cone.new_visible_cone_flag[category] == True:
-			  
 				if pp.cone.first_cone_found[category] == False:
 					pp.cone.first_visible_cone[category] = pp.cone.visible_cone_list[category][0]
 					pp.cone.first_cone_found[category] = True
