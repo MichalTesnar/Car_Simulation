@@ -73,9 +73,7 @@ class CustomEnv(gym.Env):
         # Logic
         self.pp.implement_main_logic(dt, time_running)
 
-        # TODO: convert_cones(...); dist_car and alpha be careful!
-
-        observation = [self.pp.car.angle, self.pp.car.velocity.x, self.pp.cone.cone_list]
+        observation = [self.pp.car.angle, self.pp.car.velocity.x, self.pp.cone.polar_cone_list]
 
         # TODO
         # observation should be of observation_space type and should represent the new state after action has been completed
@@ -108,11 +106,7 @@ while True:
 
 pygame.quit()
 
-
 # ALex:
-# TODO: update cone class for alpha and dist car
-# TODO: convert_cone
-# TODO: chack that generate_midpoint_path can just be taken out + think about repercussions
 # TODO: make a function that generates random actions
 
 # Andreea
