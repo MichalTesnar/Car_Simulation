@@ -19,15 +19,40 @@ class CustomEnv(gym.Env):
         self.action_space = gym.spaces.Box(low=-1., high=1., shape=(2,), dtype=np.float32)
         
         # observation = [car_angle, car_next_velocity, cone_list]
-        # TODO: look for example where obs space varies in shape over time
         self.observation_space = gym.spaces.Box(low=-1., high=1., shape=(3,), dtype=np.float32)
+
+        max_num_cones = 100
+        orientation = gym.spaces.Box(low=-1., high=1., shape=(1,), dtype=np.float32)
+        velocity = gym.spaces.Box(low=-1., high=1., shape=(1,), dtype=np.float32)
+        angles = gym.spaces.Box(low=-1., high=1., shape=(max_num_cones,), dtype=np.float32)
+        distances = gym.spaces.Box(low=0, high=1., shape=(max_num_cones,), dtype=np.float32)
+        binary = gym.spaces.Discrete(2)
+        place_holders = gym.spaces.MultiDiscrete([2 for _ in range(max_num_cones)])
+
+        # spaces for different objects
+        car_space = gym.spaces.Dict({
+            "velocity": velocity,
+            "orientation": orientation,
+        })
+
+        cone_space = gym.spaces.Dict({
+            "angles": angles,
+            "distances": distances,
+            "category": binary,
+            "place_holder": place_holders
+        })
+
+        # zipping the spaces into a tuple
+        self.observation_space = gym.spaces.Tuple([
+            car_space,
+            cone_space])
         
         self.pp = PathPlanning()
 
-    # def generate_random_action(self):
-    #     car_steering_angle = random.uniform(-self.pp.car.max_steering, self.pp.car.max_steering)
-    #     car_curr_velocity = self.pp.cruising_speed
-    #     return [car_steering_angle, car_curr_velocity]
+    def generate_random_action(self):
+        car_steering_angle = random.uniform(-self.pp.car.max_steering, self.pp.car.max_steering)
+        car_curr_velocity = self.pp.cruising_speed
+        return [car_steering_angle, car_curr_velocity]
 
     # optional for the Gym env
     def render(self, mode=None):
