@@ -6,7 +6,7 @@ import numpy as np
 from cone import Side
 
 class Car:
-    def __init__(self, x, y, angle = 0, length = 2, max_steering = 80, max_acceleration = 4.0):
+    def __init__(self, x, y, angle=0, length=2, max_steering=80, max_acceleration=4.0):
         self.position = Vector2(x, y)
         self.velocity = Vector2(0.0, 0.0)
         self.angle = angle
@@ -59,7 +59,7 @@ class Car:
 
 
     # Car crash mechanic
-    def car_crash_mechanic(self, cone_obj):
+    def car_crash_mechanic(self, cone_obj, path_obj):
         if len(cone_obj.cone_list[Side.LEFT]) > 0 or len(cone_obj.cone_list[Side.RIGHT]) > 0:
             self.crashed = False
             
@@ -71,7 +71,15 @@ class Car:
 
                 if self.crashed:
                     break
-                
+
+        # checking splines for crash
+        for category in Side:
+            if not self.crashed and path_obj.splines[category] != 0:
+                for i in range(len(path_obj.splines[category][0])):
+                    if np.linalg.norm(tuple(x-y for x,y in zip([self.position.x, self.position.y], [path_obj.splines[category][0][i], path_obj.splines[category][1][i]]))) < 0.25:
+                        self.crashed = True
+                        break
+
 
     def update(self, dt):
         self.velocity += (self.acceleration * dt, 0)

@@ -1,17 +1,9 @@
 import os
 import pygame
-from math import sin, radians, degrees, copysign
-from pygame.math import Vector2
 import time
-import numpy as np
-from PIL import Image, ImageDraw
-from scipy.interpolate import splprep, splev
-import pandas as pd
-import gym
 import random
 
 from car import Car
-from target import Target
 from cone import *
 from path import *
 
@@ -92,19 +84,15 @@ class PathPlanning:
         self.cone.cone_list[Side.LEFT] = left_cones
         self.cone.cone_list[Side.RIGHT] = right_cones
 
-
     def set_done(self):
-        self.car.car_crash_mechanic(self.cone)
-        
+        self.path.compute_boundaries(self)
+        self.car.car_crash_mechanic(self.cone, self.path)
         if self.car.crashed or self.track_number == 3:
-            self.exit = True
-
-        #reward function
-        # reward, lap_reward = pp_functions.reward_function.calculate_reward(lap_reward, car, track_number, dt)
-        # self.total_reward += reward
+            return True
+        return False
 
     def reset_new_lap(self):
-        #reset targets for new lap
+        # reset targets for new lap
         if (len(self.target.targets) > 0
         and len(self.target.non_passed_targets) == 0 
         and (self.path.spline_linked[Side.LEFT] == True or self.path.spline_linked[Side.RIGHT] == True)
@@ -169,8 +157,6 @@ class PathPlanning:
             self.car.auto = False
         
         time_start = time.time()
-        lap_reward = False
-        time_start_sim = time.time()
 
         while not self.exit:
 
@@ -189,7 +175,7 @@ class PathPlanning:
                 # user inputs
                 pp_functions.manual_controls.user_input(self, events, dt)
                          
-            #Defining the time running since simulation started
+            # Defining the time running since simulation started
             time_running = time.time() - time_start
             
             #redefining the car angle so that it is in (-180,180)
