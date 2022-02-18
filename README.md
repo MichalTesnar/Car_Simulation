@@ -5,7 +5,7 @@ coneconnecting: Code that holds math for finding cones that 'connect' to form th
 
 # How to use Cone_Detection_Module 
 
-## Implementation of Cone_Detection_Module using YOLOV5 (Current version used for HD05):
+## Implementation of Cone_Detection_Module using YOLOV5 (Current version used for HRD05):
 
 ### 1. Make sure you have installed the following:
 ```
