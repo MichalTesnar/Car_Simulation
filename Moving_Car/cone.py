@@ -31,7 +31,7 @@ class Cone:
             self.visible_cone_list[category] = []
 
             for cone in self.cone_list[category]:
-                self.polar_cone_list.append([cone.alpha, cone.dist_car])
+                self.polar_cone_list.append([cone.alpha, cone.dist_car, cone.category])
                 if cone.visible == True:
                     self.visible_cone_list[category].append(cone)
 

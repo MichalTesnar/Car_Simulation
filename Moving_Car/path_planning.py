@@ -78,7 +78,7 @@ class PathPlanning:
         global LEVEL_ID
         if LEVEL_ID == None:
             random_number = random.randint(1, 5)
-            LEVEL_ID = f"MAP_{random_number}"
+            LEVEL_ID = f"MAP_{1}"
 
         left_cones, right_cones = pp_functions.utils.load_existing_map(LEVEL_ID)
         self.cone.cone_list[Side.LEFT] = left_cones
@@ -89,7 +89,8 @@ class PathPlanning:
         self.car.car_crash_mechanic(self.cone, self.path)
         if self.car.crashed or self.track_number == 3:
             return True
-        return False
+        else:    
+            return False
 
     def reset_new_lap(self):
         # reset targets for new lap
@@ -145,7 +146,34 @@ class PathPlanning:
         for category in Side:
             for cone in self.cone.cone_list[category]:
                 cone.update(self, time_running)
-        
+
+    def get_observation(self):
+
+        angles = np.zeros(200)
+        distances = np.zeros(200)
+        categories = np.zeros(200)
+        place_holders = np.zeros(200)
+
+        for i, cone in enumerate(self.cone.polar_cone_list):
+            angles[i] = cone[0]
+            distances[i] = cone[1]
+            if cone[2] == Side.LEFT:
+                categories[i] = 0
+            else:
+                categories[i] = 1
+
+            place_holders[i] = 1
+
+        #observation = {
+            #"velocity": np.interp(self.car.velocity.x, [0, 5], [-1, 1]),
+            #"orientation": np.interp(self.car.angle, [-180,180], [-1, 1]),
+            #"cone_angles": np.interp(angles, [-180, 180], [-1, 1]),
+            #"cone_distances": np.interp(distances, [0, 100], [0, 1]),
+            #"cone_category": categories,
+            #"cone_place_holder": place_holders
+        #}
+        observation = np.array([np.interp(self.car.angle, [-180,180], [-1, 1]), 0])
+        return observation
 
     def run(self, method = "autonomous"):
 
