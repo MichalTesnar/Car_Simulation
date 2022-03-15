@@ -27,9 +27,9 @@ if __name__ == "__main__":
     #del model # remove to demonstrate saving and loading
     #model = PPO.load("car_model")
 
-    obs = env.reset()
+    observation = env.reset()
     done = False
     while not done:
-        action, _states = model.predict(obs)
+        action, _states = model.predict(observation)
         observation, global_reward, done, info = env.step(action)
         env.render()
