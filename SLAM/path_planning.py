@@ -17,7 +17,7 @@ import pp_functions.reward_function
 import pp_functions.manual_controls
 import pp_functions.boundary_midpoints_splines
 
-SIZE = 210 # size of the SLAM matrix, determines complexity of the algorithm
+SIZE = 500 # size of the SLAM matrix, determines complexity of the algorithm
 
 from objects import *
 from objects import *

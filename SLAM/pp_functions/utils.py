@@ -52,7 +52,7 @@ def load_map(mouse_pos_list, current_dir, cone, ppu):
     left_cones = []
     right_cones = []
     print('LOAD MAP: ')
-    name = input()
+    name = 'MAP_CSA1' # input()
 
     map_path = os.path.join(current_dir, f"{name}.csv")
     map_file = pd.read_csv(map_path)
